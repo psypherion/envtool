@@ -1,7 +1,5 @@
 # envtool
 
- ![envtool logo](https://via.placeholder.com/800x200.png?text=envtool)
-
 Welcome to `envtool`, your one-stop solution for Python project environment management!
 
 * **Author**: [@sarkar.sayan01](https://instagram.com/sarkar.sayan01) on Instagram
