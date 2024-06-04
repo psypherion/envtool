@@ -1,0 +1,141 @@
+#!/bin/bash
+
+echo "
+
+███████╗███╗   ██╗██╗   ██╗      ██╗  ██╗ █████╗ ███╗   ██╗██████╗ ██╗     ███████╗██████╗ 
+██╔════╝████╗  ██║██║   ██║      ██║  ██║██╔══██╗████╗  ██║██╔══██╗██║     ██╔════╝██╔══██╗
+█████╗  ██╔██╗ ██║██║   ██║█████╗███████║███████║██╔██╗ ██║██║  ██║██║     █████╗  ██████╔╝
+██╔══╝  ██║╚██╗██║╚██╗ ██╔╝╚════╝██╔══██║██╔══██║██║╚██╗██║██║  ██║██║     ██╔══╝  ██╔══██╗
+███████╗██║ ╚████║ ╚████╔╝       ██║  ██║██║  ██║██║ ╚████║██████╔╝███████╗███████╗██║  ██║
+╚══════╝╚═╝  ╚═══╝  ╚═══╝        ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝
+                                                                                           
+                                                                                                                         
+"
+
+echo "Welcome to env-handler!"
+echo "Your One-stop solution for Python project environment management"
+echo "
+
+"
+echo "- by: @sarkar.sayan01 [Instagram]"
+echo "Github : ky13-troj"
+
+env_creator() {
+  local env_name="$1"
+  read -p "Do you want to continue? (Y/n): " choice
+  case "$choice" in
+    y|Y|"")  # If Y/y or Enter (default)
+      echo "Creating environment $env_name"
+      python3 -m venv "$env_name"
+      echo "$env_name created successfully"
+      ;;
+    n|N)  # If N/n
+      echo "Exiting program."
+      exit 0
+      ;;
+    *)
+      echo "Invalid input. Exiting program."
+      exit 1
+      ;;
+  esac
+}
+
+# Function to ask the user if they want to create requirements.txt and add package names
+create_requirements_file() {
+  read -p "No requirements.txt file found. Do you want to create it? (Y/n): " choice
+  case "$choice" in
+    y|Y|"")  # If Y/y or Enter (default)
+      read -p "Enter package names separated by commas or commas and spaces: " packages
+      # Filter out "os" package from the input
+      packages=$(echo "$packages" | tr ', ' '\n' | grep -v '^os$' | tr '\n' ', ' | sed 's/,$//')
+      echo "$packages" >> requirements.txt
+      echo "requirements.txt created with the following packages:"
+      cat requirements.txt
+      ;;
+    n|N)  # If N/n
+      echo "Exiting without creating requirements.txt."
+      exit 0
+      ;;
+    *)
+      echo "Invalid input. Exiting program."
+      exit 1
+      ;;
+  esac
+}
+
+checker() {
+  if [ -f "requirements.txt" ]; then
+    echo "requirements.txt found."
+    echo "Installing packages..."
+    pip install -r requirements.txt
+  else
+    create_requirements_file
+    pip install -r requirements.txt
+  fi
+}
+
+# Initialize variables
+env_name=""
+new_name=""
+
+# Parse command-line options
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -n|--env)
+      if [[ -n "$2" ]]; then
+        env_name="$2"
+        shift
+      else
+        echo "Option $1 requires an argument." >&2
+        exit 1
+      fi
+      ;;
+    -r|--rename)
+      if [[ -n "$2" ]]; then
+        new_name="$2"
+        shift
+      else
+        echo "Option $1 requires an argument." >&2
+        exit 1
+      fi
+      ;;
+    *)
+      echo "Invalid option: $1" >&2
+      exit 1
+      ;;
+  esac
+  shift
+done
+
+# If env_name is still empty, prompt the user to enter it
+if [ -z "$env_name" ]; then
+  read -p "Enter the name of the virtual environment: " env_name
+fi
+
+# If still empty, set it to current directory name + "-env"
+if [ -z "$env_name" ]; then
+  env_name=$(basename "$PWD")-env
+fi
+
+echo "Creating Virtual environment: $env_name"
+
+env_creator "$env_name"
+
+# Activating the environment
+source "$env_name/bin/activate"
+
+# Installing packages
+checker
+
+# Renaming the environment if a new name is provided
+if [ -n "$new_name" ]; then
+  echo "Renaming environment to: $new_name"
+  mv "$env_name" "$new_name"
+  echo "Environment renamed to $new_name successfully"
+  env_name="$new_name"
+fi
+
+# Activate the renamed environment
+source "$env_name/bin/activate"
+
+echo "Virtual environment $env_name is ready to use"
