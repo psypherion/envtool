@@ -45,10 +45,10 @@ create_requirements_file() {
   read -p "No requirements.txt file found. Do you want to create it? (Y/n): " choice
   case "$choice" in
     y|Y|"")  # If Y/y or Enter (default)
-      read -p "Enter package names separated by commas or commas and spaces: " packages
+      read -p "Enter package names separated by commas or spaces: " packages
       # Filter out "os" package from the input
-      packages=$(echo "$packages" | tr ', ' '\n' | grep -v '^os$' | tr '\n' ', ' | sed 's/,$//')
-      echo "$packages" >> requirements.txt
+      packages=$(echo "$packages" | tr ', ' ' ' | tr ' ' '\n' | grep -v '^os$')
+      echo "$packages" > requirements.txt
       echo "requirements.txt created with the following packages:"
       cat requirements.txt
       ;;
@@ -76,7 +76,6 @@ checker() {
 
 # Initialize variables
 env_name=""
-new_name=""
 
 # Parse command-line options
 while [[ $# -gt 0 ]]; do
@@ -84,15 +83,6 @@ while [[ $# -gt 0 ]]; do
     -n|--env)
       if [[ -n "$2" ]]; then
         env_name="$2"
-        shift
-      else
-        echo "Option $1 requires an argument." >&2
-        exit 1
-      fi
-      ;;
-    -r|--rename)
-      if [[ -n "$2" ]]; then
-        new_name="$2"
         shift
       else
         echo "Option $1 requires an argument." >&2
@@ -127,15 +117,5 @@ source "$env_name/bin/activate"
 # Installing packages
 checker
 
-# Renaming the environment if a new name is provided
-if [ -n "$new_name" ]; then
-  echo "Renaming environment to: $new_name"
-  mv "$env_name" "$new_name"
-  echo "Environment renamed to $new_name successfully"
-  env_name="$new_name"
-fi
-
-# Activate the renamed environment
-source "$env_name/bin/activate"
-
 echo "Virtual environment $env_name is ready to use"
+
