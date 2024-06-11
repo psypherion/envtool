@@ -25,7 +25,6 @@ Welcome to `envtool`, your one-stop solution for Python project environment mana
 
 * Create virtual environments with a single command.
 * Automatically handle `requirements.txt` for package installations.
-* Rename virtual environments.
 * Simplified usage with command-line options.
 
 ## Installation
@@ -63,13 +62,6 @@ If you don't provide an environment name, you will be prompted to enter one. If 
 
 If a `requirements.txt` file is present, `envtool` will automatically install the listed packages. If not, you will be prompted to create one and specify the packages to be included.
 
-### Renaming a Virtual Environment
-
-To rename an existing virtual environment, use the `-r` or `--rename` option followed by the new name:
-
-```javascript
-envtool -n oldenv -r newenv
-```
 
 ### Example Workflow
 
@@ -85,7 +77,6 @@ envtool -n oldenv -r newenv
    source myenv/bin/activate
    ```
 
-   \
 
 ## Contributing
 
