@@ -38,10 +38,14 @@ To install `envtool`, follow these steps:
    git clone https://github.com/ky13-troj/envtool.git
    cd envtool
    ```
-2. Run the installation script to copy `envtool` to `/usr/local/bin`:
+2. Give execution Permission :
+   ```sh
+   chmod +x run.sh
+   ```
+3. Run the installation script to copy `envtool` to `/usr/local/bin`:
 
    ```sh
-   bash install_envtool.sh
+   bash run.sh
    ```
 
 ## Usage
