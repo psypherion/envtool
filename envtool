@@ -45,9 +45,9 @@ create_requirements_file() {
   read -p "No requirements.txt file found. Do you want to create it? (Y/n): " choice
   case "$choice" in
     y|Y|"")  # If Y/y or Enter (default)
-      read -p "Enter package names separated by commas or spaces: " packages
+      read -p "Enter package names separated by commas or commas and spaces: " packages
       # Filter out "os" package from the input
-      packages=$(echo "$packages" | tr ', ' ' ' | tr ' ' '\n' | grep -v '^os$')
+      packages=$(echo "$packages" | tr ', ' '\n' | grep -v '^os$')
       echo "$packages" > requirements.txt
       echo "requirements.txt created with the following packages:"
       cat requirements.txt
@@ -63,6 +63,7 @@ create_requirements_file() {
   esac
 }
 
+
 checker() {
   if [ -f "requirements.txt" ]; then
     echo "requirements.txt found."
@@ -71,6 +72,17 @@ checker() {
   else
     create_requirements_file
     pip install -r requirements.txt
+  fi
+}
+
+activate_environment() {
+  local env_name="$1"
+  if [ -d "$env_name" ]; then
+    source "$env_name/bin/activate"
+    echo "Environment '$env_name' activated."
+  else
+    echo "Environment '$env_name' does not exist."
+    exit 1
   fi
 }
 
@@ -87,6 +99,16 @@ while [[ $# -gt 0 ]]; do
       else
         echo "Option $1 requires an argument." >&2
         exit 1
+      fi
+      ;;
+    -a|--activate)
+      if [[ -n "$2" ]]; then
+        activate_environment "$2"
+        exit 0
+      else
+        env_name=$(basename "$PWD")-env
+        activate_environment "$env_name"
+        exit 0
       fi
       ;;
     *)
