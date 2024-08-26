@@ -6,7 +6,7 @@
 Welcome to `envtool`, your one-stop solution for Python project environment management!
 
 * **Author**: [@sarkar.sayan01](https://instagram.com/sarkar.sayan01) on Instagram
-* **GitHub**: [ky13-troj](https://github.com/ky13-troj)
+* **GitHub**: [ky13-troj](https://github.com/psypherion)
 
 ## Table of Contents
 
